@@ -11,6 +11,7 @@ public class UserDTO {
     private String phoneNumber;
     private String address;
     private Set<String> roles;
+    private Date dateJoined;
 
     // Constructors, Getters and Setters
     public UserDTO() {
@@ -84,8 +85,11 @@ public class UserDTO {
         this.roles = roles;
     }
 
+    public Date getDateJoined() {
+        return dateJoined;
+    }
+
     public void setDateJoined(Date dateJoined) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDateJoined'");
+        this.dateJoined = dateJoined;
     }
 }

@@ -49,7 +49,6 @@ public class User {
     private Date dateJoined;
 
     @Column(nullable = false)
-    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)

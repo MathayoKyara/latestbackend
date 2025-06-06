@@ -82,13 +82,31 @@ public class UserService {
         return dto;
     }
 
+    @Transactional
     public void deleteUser(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
     }
 
-    public Object updateUser(Long id, User userDetails) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    @Transactional
+    public UserDTO updateUser(Long id, User userDetails) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        // Update fields as needed
+        user.setFullName(userDetails.getFullName());
+        user.setEmail(userDetails.getEmail());
+        user.setPhoneNumber(userDetails.getPhoneNumber());
+        user.setAddress(userDetails.getAddress());
+
+        // If password is provided and not blank, update and encode it
+        if (StringUtils.hasText(userDetails.getPassword())) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
+
+        User updatedUser = userRepository.save(user);
+        return convertToDto(updatedUser);
     }
 }

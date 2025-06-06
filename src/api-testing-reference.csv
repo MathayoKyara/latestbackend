@@ -1,0 +1,65 @@
+API,Method,Endpoint / Example,Headers,Example Body / Params
+Register User,POST,http://localhost:8080/api/auth/signup,"Content-Type: application/json","{
+  ""username"": ""testuser"",
+  ""fullName"": ""Test User"",
+  ""email"": ""test@example.com"",
+  ""phoneNumber"": ""1234567890"",
+  ""address"": ""123 Main St"",
+  ""password"": ""yourpassword""
+}"
+Login,POST,http://localhost:8080/api/auth/signin,"Content-Type: application/json","{
+  ""username"": ""testuser"",
+  ""password"": ""yourpassword""
+}"
+Get All Users,GET,http://localhost:8080/api/users,"Authorization: Bearer <admin-token>",""
+Get User by ID,GET,http://localhost:8080/api/users/1,"Authorization: Bearer <your-token>",""
+Update User,PUT,http://localhost:8080/api/users/1,"Authorization: Bearer <your-token>; Content-Type: application/json","{
+  ""username"": ""testuser"",
+  ""fullName"": ""Updated Name"",
+  ""email"": ""test@example.com"",
+  ""phoneNumber"": ""1234567890"",
+  ""address"": ""123 Main St"",
+  ""password"": ""yourpassword""
+}"
+Delete User,DELETE,http://localhost:8080/api/users/1,"Authorization: Bearer <admin-token>",""
+Register Admin,POST,http://localhost:8080/api/users/register-admin,"Authorization: Bearer <admin-token>; Content-Type: application/json","{
+  ""username"": ""admin2"",
+  ""fullName"": ""Admin Two"",
+  ""email"": ""admin2@example.com"",
+  ""phoneNumber"": ""1234567890"",
+  ""address"": ""Admin Address"",
+  ""password"": ""securepassword""
+}"
+Get All Events,GET,http://localhost:8080/api/events,,""
+Get Event by ID,GET,http://localhost:8080/api/events/1,,""
+Get Events by Organizer,GET,http://localhost:8080/api/events/organizer/1,"Authorization: Bearer <your-token>",""
+Create Event,POST,"http://localhost:8080/api/events?organizerId=1","Authorization: Bearer <admin-token>; Content-Type: application/json","{
+  ""name"": ""Concert"",
+  ""description"": ""Live concert"",
+  ""venue"": ""Stadium"",
+  ""address"": ""123 Main St"",
+  ""startDate"": ""2025-07-01 19:00"",
+  ""endDate"": ""2025-07-01 22:00""
+}"
+Update Event,PUT,http://localhost:8080/api/events/1,"Authorization: Bearer <admin-token>; Content-Type: application/json","{
+  ""name"": ""Updated Concert"",
+  ""description"": ""Updated desc"",
+  ""venue"": ""Stadium"",
+  ""address"": ""123 Main St"",
+  ""startDate"": ""2025-07-01 20:00"",
+  ""endDate"": ""2025-07-01 23:00""
+}"
+Delete Event,DELETE,http://localhost:8080/api/events/1,"Authorization: Bearer <admin-token>",""
+Search Events,GET,"http://localhost:8080/api/events/search?query=concert",,""
+Get Upcoming Events,GET,http://localhost:8080/api/events/upcoming,,""
+Get All Tickets,GET,http://localhost:8080/api/tickets,"Authorization: Bearer <admin-token>",""
+Get Ticket by ID,GET,http://localhost:8080/api/tickets/1,"Authorization: Bearer <your-token>",""
+Get Tickets by User,GET,http://localhost:8080/api/tickets/user/1,"Authorization: Bearer <your-token>",""
+Get Tickets by Event,GET,http://localhost:8080/api/tickets/event/1,"Authorization: Bearer <your-token>",""
+Create Ticket,POST,"http://localhost:8080/api/tickets?eventId=1&userId=1&categoryClass=VIP","Authorization: Bearer <your-token>",""
+Delete Ticket,DELETE,http://localhost:8080/api/tickets/1,"Authorization: Bearer <admin-token>",""
+Validate Ticket,GET,"http://localhost:8080/api/tickets/validate/abc123","Authorization: Bearer <your-token>",""
+Create Payment,POST,"http://localhost:8080/api/payments?ticketId=1&amount=100.00&paymentMethod=CreditCard","Authorization: Bearer <your-token>",""
+Get Payment by ID,GET,http://localhost:8080/api/payments/1,"Authorization: Bearer <your-token>",""
+Get Payment by Transaction ID,GET,"http://localhost:8080/api/payments/transaction/abc123","Authorization: Bearer <your-token>",""
+Update Payment Status,PUT,"http://localhost:8080/api/payments/1/status?status=PAID","Authorization: Bearer <admin-token>",""
