@@ -1,6 +1,4 @@
-
 package com.musicbooking.service;
-
 import com.musicbooking.dto.PaymentDTO;
 import com.musicbooking.exception.ResourceNotFoundException;
 import com.musicbooking.model.*;
@@ -11,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -64,6 +64,14 @@ public class PaymentService {
         payment.setPaymentStatus(status);
         Payment updatedPayment = paymentRepository.save(payment);
         return convertToDto(updatedPayment);
+    }
+
+    public List<PaymentDTO> getPaymentsByEvent(Long eventId) {
+        // Find all payments where the ticket's event ID matches
+        List<Payment> payments = paymentRepository.findByTicket_Event_Id(eventId);
+        return payments.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     private String generateTransactionId() {

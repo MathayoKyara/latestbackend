@@ -1,17 +1,18 @@
 package com.musicbooking.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.musicbooking.dto.EventDTO;
 import com.musicbooking.exception.ResourceNotFoundException;
 import com.musicbooking.model.Event;
 import com.musicbooking.model.User;
 import com.musicbooking.repository.EventRepository;
 import com.musicbooking.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -82,7 +83,19 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    private EventDTO convertToDto(Event event) {
+    // Add this method to get Event entity by id
+    public Event getEventByIdEntity(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with id: " + id));
+    }
+
+    // Add this method to save Event entity
+    public Event save(Event event) {
+        return eventRepository.save(event);
+    }
+
+    // Update convertToDto to include imageUrl
+    public EventDTO convertToDto(Event event) {
         return new EventDTO(
                 event.getId(),
                 event.getName(),
@@ -92,6 +105,8 @@ public class EventService {
                 event.getEndDate(),
                 event.getDescription(),
                 event.getOrganizer().getId(),
-                event.getOrganizer().getFullName());
+                event.getOrganizer().getFullName(),
+                event.getImageUrl() // <-- add this line
+        );
     }
 }

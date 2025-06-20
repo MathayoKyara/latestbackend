@@ -31,6 +31,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(User user) {
         Collection<GrantedAuthority> authorities = user.getRoles().stream()
+                // Use role names as-is, no extra "ROLE_" prefix
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
 

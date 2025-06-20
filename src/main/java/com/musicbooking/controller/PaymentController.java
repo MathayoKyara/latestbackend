@@ -1,6 +1,7 @@
 package com.musicbooking.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +49,11 @@ public class PaymentController {
             @PathVariable Long id,
             @RequestParam String status) {
         return ResponseEntity.ok(paymentService.updatePaymentStatus(id, status));
+    }
+
+    @GetMapping("/event/{eventId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PaymentDTO>> getPaymentsByEvent(@PathVariable Long eventId) {
+        return ResponseEntity.ok(paymentService.getPaymentsByEvent(eventId));
     }
 }

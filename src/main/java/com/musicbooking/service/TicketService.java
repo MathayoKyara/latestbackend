@@ -1,20 +1,25 @@
 package com.musicbooking.service;
 
-import com.musicbooking.dto.TicketDTO;
-import com.musicbooking.exception.ResourceNotFoundException;
-import com.musicbooking.model.*;
-import com.musicbooking.repository.EventRepository;
-import com.musicbooking.repository.TicketRepository;
-import com.musicbooking.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.musicbooking.dto.TicketDTO;
+import com.musicbooking.exception.ResourceNotFoundException;
+import com.musicbooking.model.Event;
+import com.musicbooking.model.Ticket;
+import com.musicbooking.model.TicketCategory;
+import com.musicbooking.model.User;
+import com.musicbooking.repository.EventRepository;
+import com.musicbooking.repository.TicketRepository;
+import com.musicbooking.repository.UserRepository;
+import com.musicbooking.repository.TicketCategoryRepository;
 
 @Service
 @Transactional
@@ -25,6 +30,9 @@ public class TicketService {
     private final PaymentService paymentService;
 
     @Autowired
+    private TicketCategoryRepository ticketCategoryRepository;
+
+    @Autowired
     public TicketService(TicketRepository ticketRepository,
                         EventRepository eventRepository,
                         UserRepository userRepository,
@@ -33,6 +41,13 @@ public class TicketService {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.paymentService = paymentService;
+    }
+
+    public TicketService(EventRepository eventRepository, PaymentService paymentService, TicketRepository ticketRepository, UserRepository userRepository) {
+        this.eventRepository = eventRepository;
+        this.paymentService = paymentService;
+        this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional(readOnly = true)
@@ -72,6 +87,20 @@ public class TicketService {
         if (categoryClass == null || categoryClass.trim().isEmpty()) {
             throw new IllegalArgumentException("Ticket category class cannot be empty");
         }
+
+        // --- Ticket inventory logic ---
+        TicketCategory ticketCategory = ticketCategoryRepository
+            .findByEventIdAndCategoryClass(eventId, categoryClass)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        if (ticketCategory.getRemainingQuantity() <= 0) {
+            throw new IllegalStateException("Tickets sold out for this category");
+        }
+
+        // Decrement and save
+        ticketCategory.setRemainingQuantity(ticketCategory.getRemainingQuantity() - 1);
+        ticketCategoryRepository.save(ticketCategory);
+        // --- End inventory logic ---
 
         String ticketHash = generateUniqueTicketHash();
         Date expiryDate = Date.from(event.getEndDate().atZone(ZoneId.systemDefault()).toInstant());
@@ -125,5 +154,29 @@ public class TicketService {
         }
 
         return ticketDTO;
+    }
+
+    public TicketRepository getTicketRepository() {
+        return ticketRepository;
+    }
+
+    public EventRepository getEventRepository() {
+        return eventRepository;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public PaymentService getPaymentService() {
+        return paymentService;
+    }
+
+    public TicketCategoryRepository getTicketCategoryRepository() {
+        return ticketCategoryRepository;
+    }
+
+    public void setTicketCategoryRepository(TicketCategoryRepository ticketCategoryRepository) {
+        this.ticketCategoryRepository = ticketCategoryRepository;
     }
 }

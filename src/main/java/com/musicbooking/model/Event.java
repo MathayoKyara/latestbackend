@@ -61,6 +61,12 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Ticket> tickets = new HashSet<>();
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(nullable = false)
+    private boolean bookingOpen = true; // default to true
+
     // Constructors
     public Event() {
     }
@@ -74,5 +80,21 @@ public class Event {
         this.endDate = endDate;
         this.description = description;
         this.organizer = organizer;
+    }
+
+    // Getter and Setter
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public boolean isBookingOpen() {
+        return bookingOpen;
+    }
+
+    public void setBookingOpen(boolean bookingOpen) {
+        this.bookingOpen = bookingOpen;
     }
 }

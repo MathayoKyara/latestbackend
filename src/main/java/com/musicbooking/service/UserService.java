@@ -50,8 +50,13 @@ public class UserService {
 
     @Transactional
     public UserDTO createUser(User user) {
-        // Validate password
-        if (!StringUtils.hasText(user.getPassword())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password cannot be empty");
         }
 
@@ -78,7 +83,16 @@ public class UserService {
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setAddress(user.getAddress());
         dto.setDateJoined(user.getDateJoined());
-        // You can add roles or other fields if needed
+        // Map roles to Set<String>
+        if (user.getRoles() != null) {
+            dto.setRoles(
+                user.getRoles().stream()
+                    .map(role -> role.getName().name()) // or role.getName() if it's already a String
+                    .collect(Collectors.toSet())
+            );
+        } else {
+            dto.setRoles(null);
+        }
         return dto;
     }
 

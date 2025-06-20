@@ -19,6 +19,7 @@ public class EventDTO {
     private String description;
     private Long organizerId;
     private String organizerName;
+    private String imageUrl;
 
     // Constructors, Getters and Setters
     public EventDTO() {
@@ -26,7 +27,8 @@ public class EventDTO {
 
     public EventDTO(Long id, String name, String venue, String address, 
                    LocalDateTime startDate, LocalDateTime endDate, 
-                   String description, Long organizerId, String organizerName) {
+                   String description, Long organizerId, String organizerName,
+                   String imageUrl) {
         this.id = id;
         this.name = name;
         this.venue = venue;
@@ -36,6 +38,7 @@ public class EventDTO {
         this.description = description;
         this.organizerId = organizerId;
         this.organizerName = organizerName;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
@@ -109,5 +112,13 @@ public class EventDTO {
 
     public void setOrganizerName(String organizerName) {
         this.organizerName = organizerName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

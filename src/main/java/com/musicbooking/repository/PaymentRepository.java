@@ -1,12 +1,14 @@
 package com.musicbooking.repository;
 
-import com.musicbooking.model.Payment;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
+import java.util.List;
 import java.util.Optional;
 
-@Repository
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.musicbooking.model.Payment;
+
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
+    List<Payment> findByTicket_Event_Id(Long eventId);
+
     Optional<Payment> findByTransactionId(String transactionId);
 }
